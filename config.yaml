@@ -1,0 +1,5 @@
+news_sites:
+  vanguardia:
+    url: https://www.vanguardia.com
+    queries:
+      article_links: '.template-vg-{0}'
