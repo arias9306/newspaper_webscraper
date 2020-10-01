@@ -2,4 +2,6 @@ news_sites:
   vanguardia:
     url: https://www.vanguardia.com
     queries:
-      article_links: '.template-vg-{0}'
+      article_links: '.template-vg-{0} a'
+      article_title: 'h1 > span.priority-content'
+      article_body: '.paragraph'
