@@ -26,7 +26,8 @@ def main():
             row['newspaper_uid'],
             row['n_tokens_body'],
             row['n_tokens_title'],
-            row['url']
+            row['url'],
+            row['sentiment']
         )
         postgres_session.add(article)
 

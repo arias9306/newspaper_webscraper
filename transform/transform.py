@@ -2,6 +2,8 @@ import argparse
 import pandas as pd
 import hashlib
 import nltk
+import requests
+
 from urllib.parse import urlparse
 from nltk.corpus import stopwords
 
@@ -25,8 +27,31 @@ def main():
     dataFrame['n_tokens_body'] = _tokenize_columns(dataFrame, 'body')
     dataFrame = _remove_duplicates(dataFrame, 'title')
     dataFrame = _remove_row_with_missing_values(dataFrame)
+    dataFrame = _get_sentiment_using_watson(dataFrame)
 
     _save_file(dataFrame, filename)
+
+
+def _get_sentiment_using_watson(dataFrame):
+    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/45008b0f-283b-445d-aa71-103837379e9a/v1/analyze?version=2018-11-16"
+    token = ''
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic {}'.format(token)
+    }
+
+    for index, row in dataFrame.iterrows():
+        payload = "{" + ' "url": "' + \
+            row['url'] + '", "features" : ' + \
+            "{" + '"sentiment": ' + " { }  } }"
+        response = requests.request("POST", url, headers=headers, data=payload)
+        values = response.json()
+
+        dataFrame.loc[index, 'sentiment'] = values[
+            'sentiment']['document']['label']
+
+    return dataFrame
 
 
 def _save_file(dataFrame, filename):
